@@ -22,7 +22,7 @@ class Block {
 		this.time = 0;                                              // Timestamp for the Block creation
 		this.previousBlockHash = null;                              // Reference to the previous Block Hash
     }
-    
+
     /**
      *  validate() method will validate if the block has been tampered or not.
      *  Been tampered means that someone from outside the application tried to change
@@ -42,11 +42,9 @@ class Block {
             const curHash = self.hash;
 
             // Recalculate the hash of the Block
-            console.log(`Stored hash: ${curHash}`)
             self.hash = null;
             const myHash = SHA256(JSON.stringify(self));
             self.hash = curHash;
-            console.log(`Actual hash: ${myHash}`)
             // Comparing if the hashes changed
             if (curHash != myHash){
                 // Returning the Block is not valid
