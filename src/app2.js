@@ -11,7 +11,7 @@ const block = new BlockClass.Block("Test Block");
 console.log(`${block.body}`)
 
 // Generating the block hash
-block.getBData().then((result) => {
+block.validate().then((result) => {
 	console.log(`Block Hash: ${result.hash}`);
 	console.log(`Block: ${JSON.stringify(result)}`);
 }).catch((error) => {console.log(`Something went wrong: ${error}`)});
