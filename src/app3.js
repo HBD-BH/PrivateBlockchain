@@ -8,3 +8,5 @@ bc._addBlock(new BlockClass.Block("Test data"));
 const myGenblock = bc.chain[1];
 
 myGenblock.validate().then( result => console.log(result), error => console.log(error) );
+
+bc.requestMessageOwnershipVerification("abcd").then(result => console.log(result)).catch(error => console.log(error));
