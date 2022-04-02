@@ -125,7 +125,10 @@ class Blockchain {
                 const timeRequested = parseInt(message.split(':')[1])
                 let currentTime = parseInt(new Date().getTime().toString().slice(0, -3));
                 let timeElapsed = currentTime - timeRequested;
-                console.log(`Elapsed time: ${timeElapsed}`)
+                // TODO Would be nice to check whether another star was
+                // registered with the same signature, already, and reject upon
+                // reusage.
+                //console.log(`Elapsed time: ${timeElapsed}`)
                 if (timeElapsed < 300) { // 300 s = 5 minutes
                     if (bitcoinMessage.verify(message, address, signature)) {
                         // Create block
@@ -185,7 +188,7 @@ class Blockchain {
 
     /**
      * This method will return a Promise that will resolve with an array of Stars objects existing in the chain
-     * and are belongs to the owner with the wallet address passed as parameter.
+     * and belonging to the owner with the wallet address passed as parameter.
      * Remember the star should be returned decoded.
      * @param {*} address
      */
@@ -193,7 +196,21 @@ class Blockchain {
         let self = this;
         let stars = [];
         return new Promise((resolve, reject) => {
-
+            try {
+                // Check owner for every block except the Genesis block
+                for (let block of self.chain.slice(1)) {
+                    block.getBData().then( result => {
+                        if (result.owner===address){
+                            stars.push(result.data);
+                        } else {
+                            console.log("different owner");
+                        }
+                    }).catch(error => {console.log(error)});
+                }
+                resolve(stars);
+            } catch (error) {
+                reject(error);
+            }
         });
     }
 
