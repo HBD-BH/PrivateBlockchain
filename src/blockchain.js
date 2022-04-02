@@ -78,8 +78,12 @@ class Blockchain {
                 self.chain.push(block);
                 self.height += 1;
 
+                self.validateChain().then(result => {
+                    resolve(block);
+                }).catch(error => {
+                    reject(error);
+                })
 
-                resolve(block)
             } catch(err) {
                 reject(err)
             }
@@ -220,12 +224,32 @@ class Blockchain {
      * This method will return a Promise that will resolve with the list of errors when validating the chain.
      * Steps to validate:
      * 1. You should validate each block using `validateBlock`
-     * 2. Each Block should check the with the previousBlockHash
+     * 2. Each Block should check whether the `previousBlockHash` is correct
      */
     validateChain() {
         let self = this;
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
+            try{
+                let prevHash = null;
+                for (let i = 0; i < self.chain.length; i++ ) {
+                    self.getBlockByHeight(i).then(result => {
+                        if (result.previousBlockHash === prevHash) {
+                            result.validate().catch(error => {
+                                // Don't do anything if validation is true
+                                errorLog.push(error);
+                            })
+                        } else {
+                            reject(`Chain broken at height ${i}.`)
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+                }
+                resolve(errorLog);
+            } catch (err) {
+                reject(err);
+            }
 
         });
     }
