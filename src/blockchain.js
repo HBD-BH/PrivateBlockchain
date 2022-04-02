@@ -121,20 +121,28 @@ class Blockchain {
     submitStar(address, message, signature, star) {
         let self = this;
         return new Promise(async (resolve, reject) => {
-            const timeRequested = parseInt(message.split(':')[1])
-            let currentTime = parseInt(new Date().getTime().toString().slice(0, -3));
-            let timeElapsed = currentTime - timeRequested;
-            console.log(`Elapsed time: ${timeElapsed}`)
-            if (timeElapsed < 300) { // 300 s = 5 minutes
-                if (bitcoinMessage.verify(message, address, signature)) {
-                    // Create block
-                    self._addBlock(new BlockClass.Block(star));
-                    resolve(self);
+            try {
+                const timeRequested = parseInt(message.split(':')[1])
+                let currentTime = parseInt(new Date().getTime().toString().slice(0, -3));
+                let timeElapsed = currentTime - timeRequested;
+                console.log(`Elapsed time: ${timeElapsed}`)
+                if (timeElapsed < 300) { // 300 s = 5 minutes
+                    if (bitcoinMessage.verify(message, address, signature)) {
+                        // Create block
+                        self._addBlock(new BlockClass.Block(
+                            {
+                                owner: address,
+                                data: star
+                            }));
+                        resolve(self);
+                    } else {
+                        reject("Could not verify message with given wallet address and signature")
+                    }
                 } else {
-                    reject(new Error("Could not verify message with given wallet address and signature"))
+                    reject("More than 5 minutes elapsed, sorry.")
                 }
-            } else {
-                reject(new Error("More than 5 minutes elapsed, sorry."))
+            } catch(err) {
+                reject(err)
             }
         });
     }
