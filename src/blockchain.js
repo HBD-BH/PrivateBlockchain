@@ -209,7 +209,7 @@ class Blockchain {
                         if (result.owner===address){
                             stars.push(result.data);
                         } else {
-                            console.log("different owner");
+                            //console.log("Different owner");
                         }
                     }).catch(error => {console.log(error)});
                 }
@@ -236,7 +236,8 @@ class Blockchain {
                     self.getBlockByHeight(i).then(result => {
                         if (result.previousBlockHash === prevHash) {
                             result.validate().catch(error => {
-                                // Don't do anything if validation is true
+                                // Don't do anything if block validation is true
+                                // Add error to log if block validation is false
                                 errorLog.push(error);
                             })
                         } else {
