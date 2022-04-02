@@ -47,10 +47,10 @@ class Block {
             self.hash = curHash;
             // Comparing if the hashes changed
             if (curHash != myHash){
-                // Returning the Block is not valid
+                // Rejecting on false if the Block is not valid
                 reject(false);
             }
-            // Returning the Block is valid
+            // Resolving on true if the Block is valid
             resolve(true);
 
         });

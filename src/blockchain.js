@@ -65,22 +65,28 @@ class Blockchain {
         let self = this;
         return new Promise(async (resolve, reject) => {
             try {
+                // Set block height and timestamp
                 block.height = self.height+1;
                 block.time = new Date().getTime().toString().slice(0,-3); // To make compatible with UTC time stamp
 
+                // Add previousBlockHash if we're not dealing with the Genesis
+                // block
                 if (block.height>0){
-                    block.previousBlockHash = this.chain[this.height].hash;
+                    block.previousBlockHash = self.chain[self.height].hash;
                 }
 
-
+                // Add hash to the block
                 block.hash = SHA256(JSON.stringify(block)).toString();
 
+                // Update chain: push block and adjust height
                 self.chain.push(block);
                 self.height += 1;
 
+                // Resolve with the block if the chain is valid
                 self.validateChain().then(result => {
                     resolve(block);
                 }).catch(error => {
+                    // Or reject otherwise
                     reject(error);
                 })
 
@@ -101,8 +107,11 @@ class Blockchain {
      */
     requestMessageOwnershipVerification(address) {
         return new Promise((resolve) => {
+            // Get current tiime stamp
             let curTime = new Date().getTime().toString().slice(0,-3);
+            // Assemble message
             let myMsg = address+":"+curTime+":starRegistry";
+            // and resolve
             resolve(myMsg);
         });
     }
@@ -128,6 +137,7 @@ class Blockchain {
         let self = this;
         return new Promise(async (resolve, reject) => {
             try {
+                // Check time elapsed: should be below 5 minutes
                 const timeRequested = parseInt(message.split(':')[1])
                 let currentTime = parseInt(new Date().getTime().toString().slice(0, -3));
                 let timeElapsed = currentTime - timeRequested;
@@ -136,6 +146,7 @@ class Blockchain {
                 // reusage.
                 //console.log(`Elapsed time: ${timeElapsed}`)
                 if (timeElapsed < 300) { // 300 s = 5 minutes
+                    // Verify message
                     if (bitcoinMessage.verify(message, address, signature)) {
                         // Create block
                         self._addBlock(new BlockClass.Block(
@@ -143,14 +154,19 @@ class Blockchain {
                                 owner: address,
                                 data: star
                             }));
-                        resolve(self);
+                        // Resolve with the block just added
+                        resolve(self.chain.slice(-1)[0]);
                     } else {
+                        // Reject with an error message about the message
+                        // validation
                         reject("Could not verify message with given wallet address and signature")
                     }
                 } else {
+                    // Reject with an error about the elapsed time
                     reject("More than 5 minutes elapsed, sorry.")
                 }
             } catch(err) {
+                // Reject with a generic error
                 reject(err)
             }
         });
