@@ -68,8 +68,8 @@ class Blockchain {
                 block.height = self.height+1;
                 block.time = new Date().getTime().toString().slice(0,-3); // To make compatible with UTC time stamp
 
-                if (this.height>0){
-                    block.previousBlockHash = this.chain[this.height-1].hash;
+                if (block.height>0){
+                    block.previousBlockHash = this.chain[this.height].hash;
                 }
 
 
