@@ -90,5 +90,7 @@ The screenshots in the project documentation do not match the current end point 
 5. Retrieving Stars owned by a specific wallet address
     ![Request: http://localhost:8000/blocks/<WALLET_ADDRESS>](pic/getStarsByOwner.png)
 
+    This is the output after having added an additional star in between (no extra screenshot, compare with screenshot 4).
+
 
 
