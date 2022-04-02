@@ -81,7 +81,7 @@ The screenshots in the project documentation do not match the current end point 
 3. Signing the message with a wallet:
     ![Use the Wallet to sign a message](pic/signMessage.png)
 
-    Using Bitcoin Core, I followed the hint given [here]() on how to create a legacy address (by adding `address=legacy` to the `bitcoin.conf` file before startup).
+    Using Bitcoin Core, I followed the hint given [here](https://bitcoin.stackexchange.com/a/92849) on how to create a legacy address (by adding `address=legacy` to the `bitcoin.conf` file before startup).
 
 4. Submitting a new Star
      ![Request: http://localhost:8000/submitstar](pic/submitNewStar.png)
