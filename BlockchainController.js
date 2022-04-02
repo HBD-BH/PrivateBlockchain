@@ -16,6 +16,7 @@ class BlockchainController {
         this.submitStar();
         this.getBlockByHash();
         this.getStarsByOwner();
+        this.validateChain();
     }
 
     // Enpoint to Get a Block by Height (GET Endpoint)
@@ -114,6 +115,23 @@ class BlockchainController {
                 return res.status(500).send("Block Not Found! Review the Parameters!");
             }
 
+        });
+    }
+
+    // This endpoint allows to validate the whole chain --> return the list of
+    // errors happening
+    validateChain() {
+        this.app.get("/chain/validate", async(req, res) => {
+            try {
+                let errorLog = await this.blockchain.validateChain();
+                if (errorLog.length > 0){
+                    return res.status(200).json(errorLog);
+                } else {
+                    return res.status(200).send("Validation successful, no errors found.");
+                }
+            } catch (error) {
+                return res.status(500).send("An error happened during validation!");
+            }
         });
     }
 
